@@ -1,0 +1,85 @@
+# Python specific
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Environment files
+.env
+
+# Jupyter Notebook files
+.ipynb_checkpoints/
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs_analysis.dat
+*.nib
+*.sublime-workspace
+*.sublime-project
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# Build directories
+build/
+dist/
+*.egg-info/
+*.eggs/
+*.egg
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+env.bak/
+venv.bak/
+
+# Misc
+*.csv
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.pdf
+
+# Pyenv
+.python-version
+
+# pytest
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Coverage
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+
+# Flask
+instance/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
