@@ -1,24 +1,31 @@
 import matplotlib.pyplot as plt
 
-def plot_cpi_changes(cpi_df):
+import matplotlib.pyplot as plt
+import os
+
+def plot_econ_data(econ_df, title, y_label):
     plt.figure(figsize=(12, 6))
-    if 'monthly_inflation_rate' in cpi_df.columns:
-        plt.plot(cpi_df.index, cpi_df['monthly_inflation_rate'], label='Monthly Inflation Rate', color='blue')
-    if 'yoy_inflation_rate' in cpi_df.columns:
-        plt.plot(cpi_df.index, cpi_df['yoy_inflation_rate'], label='YOY Inflation Rate', color='red')
-    plt.title('CPI Inflation Rate Over Time')
+    if 'mom_percentage_change' in econ_df.columns:
+        plt.plot(econ_df.index, econ_df['mom_percentage_change'], label='Month-over-Month Percentage Change', color='blue')
+    if 'yoy_percentage_change' in econ_df.columns:
+        plt.plot(econ_df.index, econ_df['yoy_percentage_change'], label='Year-over-Year Percentage Change', color='red')
+    plt.title(title)
     plt.xlabel('Date')
-    plt.ylabel('Inflation Rate (%)')
+    plt.ylabel(y_label)
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
-    plt.savefig('output/cpi_inflation_rate.png')
+    plt.savefig(f'output/{title.replace(" ", "_").replace("/", "_")}.png')
     plt.show()
 
 def plot_stock_prices(stock_data):
     for ticker, df in stock_data.items():
         plt.figure(figsize=(12, 6))
-        plt.plot(df.index, df['Adj Close'], label=f'{ticker} Adjusted Close Price', color='green')
+        if 'Adj Close' in df.columns:
+            plt.plot(df.index, df['Adj Close'], label=f'{ticker} Adjusted Close Price', color='green')
+        else:
+            print(f"Warning: 'Adj Close' column not found for {ticker}. Available columns: {df.columns.tolist()}")
+        
         plt.title(f'{ticker} Adjusted Close Price Over Time')
         plt.xlabel('Date')
         plt.ylabel('Adjusted Close Price')

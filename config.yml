@@ -1,9 +1,12 @@
-cpi_series_id: "CPIAUCNS"
-treasury_yield_series_id: "GS30"
+econ_data:
+  - series_id: "CPIAUCNS"
+    transforms: ['yoy_percentage_change']
+  - series_id: "GS30"
+    transforms: ['yoy_percentage_change']
 tickers:
-  - "TMF"
-  - "TLT"
-  - "EDV"
-  - "VGLT"
+  - symbol: "TMF"
+    transforms: [None]
+  - symbol: "TLT"
+    transforms: [None]
 start_date: "2000-01-01"
 end_date: "2024-12-31"
