@@ -25,31 +25,40 @@ end_date = config['end_date']
 def apply_transformations(df, transforms):
     """
     Applies a sequence of transformations to the dataframe.
-    Returns only the transformed columns.
+    Returns the transformed dataframe.
     """
-    transformed_columns = []  # Track transformed columns
     for transform in transforms:
-        if transform == 'mom_percentage_change' or transform == 'yoy_percentage_change':
-            df = calculate_percentage_changes(df, value_column='value', change_types=transforms)
-            transformed_columns.extend([col for col in df.columns if col.endswith('percentage_change')])
+        if transform == 'identity':
+            # Identity transform does nothing
+            continue
+        elif transform == 'mom_percentage_change':
+            # Calculate month-over-month percentage change
+            df = calculate_percentage_changes(df, value_column='value', change_types=['mom_percentage_change'])
+        elif transform == 'yoy_percentage_change':
+            # Calculate year-over-year percentage change
+            df = calculate_percentage_changes(df, value_column='value', change_types=['yoy_percentage_change'])
+        elif transform == 'log':
+            # Apply log transformation
+            df = log_transform(df, value_column='value')
+        elif transform == 'normalize':
+            # Normalize data
+            df = normalize_data(df, value_column='value')
     
-    # Return only the columns that were successfully created
-    return df[[col for col in transformed_columns if col in df.columns]]
+    return df
 
 def main():
     # Fetch and process economic data
     for econ_entry in econ_data:
         series_id = econ_entry['series_id']
-        transforms = econ_entry.get('transforms', [])
+        print(f"Now running series{series_id}")
+        transforms = econ_entry.get('transforms', ['identity'])  # Default to identity if no transform is provided
 
         # Fetch data from FRED
         econ_df = fetch_fred_data(series_id, start_date, end_date)
         print(econ_df.head(10))
         if not econ_df.empty:
-            # Filter out None values from transforms
-            valid_transforms = [t for t in transforms if t and t != 'None']
-            if valid_transforms:
-                econ_df = apply_transformations(econ_df, valid_transforms)
+            # Apply transformations
+            econ_df = apply_transformations(econ_df, transforms)
             print(f"Transformed data for {series_id}:")
             print(econ_df.head(10))
             econ_df.to_csv(f'output/{series_id}_data.csv')
@@ -60,17 +69,15 @@ def main():
     stock_data = {}
     for ticker_entry in tickers:
         symbol = ticker_entry['symbol']
-        transforms = ticker_entry.get('transforms', [])
+        transforms = ticker_entry.get('transforms', ['identity'])  # Default to identity if no transform is provided
 
         # Fetch stock data using yfinance
         stock_df = yf.download(symbol, start=start_date, end=end_date)
 
         if not stock_df.empty:
-            # Filter out None values from transforms
-            valid_transforms = [t for t in transforms if t and t != 'None']
-            if valid_transforms:
-                stock_df = apply_transformations(stock_df, valid_transforms)
-                print("############## APPLIED TRANSFORMATIONS ###################")
+            # Apply transformations
+            stock_df = apply_transformations(stock_df, transforms)
+            print("############## APPLIED TRANSFORMATIONS ###################")
             stock_data[symbol] = stock_df
             print(f'Data for {symbol} added to stock_data.')
         else:
