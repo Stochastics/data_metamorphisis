@@ -1,5 +1,5 @@
 import requests
-import pandas as pd
+import polars as pl
 import os
 from dotenv import load_dotenv
 
@@ -21,11 +21,12 @@ def fetch_fred_data(series_id, start_date='2000-01-01', end_date='2024-12-31', f
     if response.status_code == 200:
         data = response.json()
         if 'observations' in data:
-            df = pd.DataFrame(data['observations'])
-            if not df.empty:
-                df['date'] = pd.to_datetime(df['date'])
-                df.set_index('date', inplace=True)
-                df['value'] = pd.to_numeric(df['value'], errors='coerce')
-                df.sort_index(inplace=True)
+            df = pl.DataFrame(data['observations'])
+            if not df.is_empty():
+                df = df.with_columns([
+                    pl.col('date').str.strptime(pl.Date, '%Y-%m-%d').alias('date'),
+                    pl.col('value').cast(pl.Float64, strict=False)
+                ])
+                df = df.sort('date')
                 return df
-    return pd.DataFrame()
+    return pl.DataFrame()

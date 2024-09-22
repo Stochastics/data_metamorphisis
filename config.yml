@@ -1,10 +1,24 @@
 econ_data:
   - series_id: "CPIAUCNS"
     transforms: ['yoy_percentage_change']
-  - series_id: "GS30"
+    plot_title: "CPI YOY CHANGE"
+  - series_id: "GS30"  # 30-year Treasury Bill
+    transforms: ['identity']
+    plot_title: "30 YEAR TREASURY BOND"
+  - series_id: "M2SL"  # M2 Money Supply series ID
+    transforms: ['yoy_percentage_change']
+    plot_title: "MONEY SUPPLY (M2) YOY CHANGE"
+  - series_id: "GS2"  # 2-Year Treasury Bill series ID
+    plot_title: "2 YEAR TREASURY NOTE"
     transforms: ['identity']
 tickers:
+  - symbol: "BTC-USD"  # Bitcoin symbol in Yahoo Finance
+    transforms: ['identity']
+    value_column: "Adj Close"  # Optional: customize if needed
+    plot_title: "BITCOIN-USD ADJUSTED CLOSED"
   - symbol: "TMF"
     transforms: ['identity']
-start_date: "2000-01-01"
+    value_column: "Close"  # Optional: customize if needed
+    plot_title: "TMF ADJUSTED CLOSE"
+start_date: "1970-01-01"
 end_date: "2024-12-31"
